@@ -11,7 +11,7 @@ on:
         default: latest
         type: string
       push:
-        description: Push image to GHCR
+        description: Push image
         required: true
         default: true
         type: boolean
@@ -64,6 +64,12 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
       - name: Docker build & push
         uses: docker/build-push-action@v6
         with:
@@ -74,6 +80,8 @@ jobs:
           tags: |
             ghcr.io/${{ github.repository_owner }}/kira-ai:${{ steps.tag.outputs.IMGTAG }}
             ghcr.io/${{ github.repository_owner }}/kira-ai:sha-${{ github.sha }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/kira-ai:${{ steps.tag.outputs.IMGTAG }}
+            ${{ secrets.DOCKERHUB_USERNAME }}/kira-ai:sha-${{ github.sha }}
           cache-from: type=gha,scope=arm64-${{ github.event_name }}
           cache-to: type=gha,scope=arm64-${{ github.event_name }},mode=max
           provenance: false
@@ -83,6 +91,5 @@ jobs:
           echo "=== Built images ==="
           echo "ghcr.io/${{ github.repository_owner }}/kira-ai:${{ steps.tag.outputs.IMGTAG }}"
           echo "ghcr.io/${{ github.repository_owner }}/kira-ai:sha-${{ github.sha }}"
-          echo ""
-          echo "Pull command:"
-          echo "docker pull ghcr.io/${{ github.repository_owner }}/kira-ai:${{ steps.tag.outputs.IMGTAG }}"
+          echo "${{ secrets.DOCKERHUB_USERNAME }}/kira-ai:${{ steps.tag.outputs.IMGTAG }}"
+          echo "${{ secrets.DOCKERHUB_USERNAME }}/kira-ai:sha-${{ github.sha }}"
