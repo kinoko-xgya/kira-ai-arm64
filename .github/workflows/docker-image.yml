@@ -183,7 +183,7 @@ jobs:
           push: ${{ (github.event_name != 'workflow_dispatch') || inputs.push }}
           tags: |
             ${{ steps.tags.outputs.tags }}
-            ghcr.io/${{ github.repository_owner }}/${IMAGE_NAME}:latest
+            ghcr.io/${{ github.repository_owner }}/${{ env.IMAGE_NAME }}:latest
           build-args: |
             BASE_TAG=${{ needs.resolve.outputs.base_tag }}
           labels: |
@@ -205,7 +205,7 @@ jobs:
           push: true
           tags: |
             ${{ steps.tags.outputs.tags_dockerhub }}
-            ${{ secrets.DOCKERHUB_USERNAME }}/${IMAGE_NAME}:latest
+            ${{ secrets.DOCKERHUB_USERNAME }}/${{ env.IMAGE_NAME }}:latest
           build-args: |
             BASE_TAG=${{ needs.resolve.outputs.base_tag }}
           cache-from: type=gha,scope=multiarch
