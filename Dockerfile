@@ -1,4 +1,7 @@
-FROM xxynet/kira-ai:latest
+# 基础镜像版本由 CI 通过 build-arg 注入；本地构建可用 --build-arg BASE_TAG=v3.1.0
+# 显式写版本号，方便追溯和回滚
+ARG BASE_TAG=v3.1.0
+FROM xxynet/kira-ai:${BASE_TAG}
 
 ENV DEBIAN_FRONTEND=noninteractive
 ENV PYTHONUNBUFFERED=1
